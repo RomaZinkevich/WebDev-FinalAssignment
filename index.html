@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Data</title>
+    <script src="script.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="container">
+        <div class="tabs">
+            <button id="tab1" class="pressedtab">All</button>
+            <button id="tab2">Temperature</button>
+            <button id="tab3">Wind Speed</button>
+            <button id="tab4">Custom</button>
+            <button id="tab5">Info</button>
+        </div>
+        <div class="clr"></div>
+        <div class="dropdown hidden">
+            <div class="select">
+                <span class="selected">Now</span>
+                <div class="caret"></div>
+            </div>
+            <ul class="menu menu1">
+                <li class="active">Now</li>
+                <li>24H</li>
+                <li>48H</li>
+                <li>72H</li>
+                <li>1W</li>
+            </ul>
+        </div>
+        <div class="dropdown hidden">
+            <div class="select">
+                <span class="selected">Rain</span>
+                <div class="caret"></div>
+            </div>
+            <ul class="menu menu2">
+                <li class="active">Rain</li>
+                <li>Wind speed</li>
+                <li>Wind direction</li>
+                <li>Light</li>
+                <li>Temperature</li>
+            </ul>
+        </div>
+        <div id="content">
+            <div id="chart"></div>
+            <h1></h1>
+            <table>
+                <thead>
+                    <tr id="titles">
+                    </tr>
+                </thead>
+                <tbody id="measurements">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
