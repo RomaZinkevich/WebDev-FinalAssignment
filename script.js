@@ -3,6 +3,7 @@ const tempButton=document.getElementById('tab2')
 const windButton=document.getElementById('tab3')
 const customButton=document.getElementById('tab4')
 const infoButton=document.getElementById('tab5')
+const themebutton=document.getElementsByClassName('theme')[0]
 
 window.onload=(event)=>{
     last30Measurements()
@@ -44,6 +45,23 @@ customButton.addEventListener('click',e=>{
     customButton.classList.add("pressedtab")
 })
 
+themebutton.addEventListener('click',e=>{
+    themebutton.style.backgroundColor=themebutton.style.backgroundColor=="rgb(0, 150, 255)"?"#ab2525":"rgb(0, 150, 255)"
+    document.body.style.backgroundColor=document.body.style.backgroundColor!="rgb(171, 37, 37)"?"#ab2525":"#0096FF"
+    let tabs=document.querySelectorAll(".blue")
+    if (tabs.length!=0)
+    tabs.forEach(e=>{
+        e.classList.remove("blue")
+        e.classList.add("red")
+    })
+    else{
+        tabs=document.querySelectorAll(".red")
+        tabs.forEach(e=>{
+            e.classList.add("blue")
+            e.classList.remove("red")
+        })
+    }
+})
 
 
 const last30Measurements=()=>{
@@ -122,7 +140,7 @@ const tempMeasurements=()=>{
         let i=0
         const titles=document.getElementById('titles')
         const tbody=document.getElementById('measurements')
-        chartCreation(data,"Temperature")
+        chartCreation(data,"Temperature",'temperature',"bar")
         titles.innerHTML='<th>Row number</th><th>Date</th><th>Time</th><th>Temperature</th>'
         data.forEach(element=>{
             i++
@@ -181,7 +199,7 @@ const windMeasurements=()=>{
         let i=0
         const titles=document.getElementById('titles')
         const tbody=document.getElementById('measurements')
-        chartCreation(data,"Wind Speed")
+        chartCreation(data,"Wind Speed","wind_speed","bar")
         titles.innerHTML='<th>Row number</th><th>Date</th><th>Time</th><th>Wind speed</th>'
         data.forEach(element=>{
             i++
@@ -211,9 +229,82 @@ const windMeasurements=()=>{
     })
 }
 const customMeasurements=()=>{
+    const selected=document.getElementsByClassName('selected')[0]
+    const selectedType=document.getElementsByClassName('selected')[1]
+    let typeOrigin=selectedType.textContent
+    type=typeOrigin.split(' ').join('_').toLowerCase()
+    let link=`http://webapi19sa-1.course.tamk.cloud/v1/weather`
+    nowFlag=true
     cleanContainer()
     document.getElementsByClassName('dropdown')[0].classList.remove('hidden')
-    document.getElementsByClassName('dropdown')[1].classList.remove('hidden')
+    document.getElementsByClassName('dropdown')[1].classList.remove("hidden")
+    switch(selected.textContent){
+        case '24H':
+            link=`https://webapi19sa-1.course.tamk.cloud/v1/weather/${type}/23`
+            nowFlag=false
+            break
+        case '48H':
+            link=`https://webapi19sa-1.course.tamk.cloud/v1/weather/${type}/47`
+            nowFlag=false
+            break
+        case '72H':
+            link=`https://webapi19sa-1.course.tamk.cloud/v1/weather/${type}/71`
+            nowFlag=false
+            break
+        case '1W':
+            link=`https://webapi19sa-1.course.tamk.cloud/v1/weather/${type}/167`
+            nowFlag=false
+            break
+    }
+    fetch(link)
+    .then(response=>response.json())
+    .then(data=>{
+        let htmltext=''
+        let i=0
+        let iMax=parseInt(nowFlag?25:1000);
+        let typeOfData=null
+        const titles=document.getElementById('titles')
+        const tbody=document.getElementById('measurements')
+        titles.innerHTML=`<th>Row number</th><th>Date</th><th>Time</th><th>${typeOrigin}</th>`
+        dataNew=[]
+        data.forEach(element=>{
+            for (el in element.data){
+                value=element.data[el]
+                typeOfData=el
+            }
+            if (i<iMax&&((typeOfData==type)||(typeOfData==null))){
+                if (typeOfData==type)
+                dataNew.push({"date_time":element.date_time,
+                [typeOfData]:value})
+                else value=eval(`element.${type}`)
+                i++
+                htmltext+='<tr>'
+                htmltext+='<th id="nums">'
+                htmltext+=i
+                htmltext+='</th>'
+    
+                htmltext+=' <th>'
+                htmltext+=element.date_time.split('T')[0]
+                htmltext+='</th>'
+    
+                htmltext+=' <th>'
+                htmltext+=element.date_time.split('T')[1].slice(0,8)
+                htmltext+='</th>'
+    
+                htmltext+=' <th>'
+                htmltext+=value
+                htmltext+='</th>'
+    
+                htmltext+='</tr>'
+            }
+            
+        })
+        chartCreation(dataNew.length!=0?dataNew:data,typeOrigin,type,'line')
+        tbody.innerHTML=htmltext
+    })
+    .catch(error=>{
+        console.error(error)
+    })
 
 }
 
@@ -221,16 +312,37 @@ const infoPresent=()=>{
     cleanContainer()
     document.getElementsByClassName('dropdown')[0].classList.add("hidden")
     document.getElementsByClassName('dropdown')[1].classList.add("hidden")
-    const h1=document.getElementsByTagName('h1')[0]
-    h1.innerHTML="Roman Zinkevich<br>roman.zinkevich@tuni.fi"
+    const infoBlock=document.getElementById("info")
+    const img=document.createElement("img")
+    const featureinfo=document.createElement("h1")
+    const title=document.createElement("h2")
+    img.src='photo.jpg'
+    infoBlock.appendChild(img)
+    title.textContent="Photo made by me, all rights reserved"
+    featureinfo.textContent="Additional feature (switch theme button) added to enhance usability for users with different preferences"
+
+    h1=document.createElement("h1")
+    h1.innerHTML=`Roman Zinkevich`
+    infoBlock.appendChild(h1)
+    h1=document.createElement("h1")
+    h1.innerHTML=`roman.zinkevich@tuni.fi`
+    infoBlock.appendChild(h1)
+    h1=document.createElement("h1")
+    h1.innerHTML=`<a href="https://github.com/RomaZinkevich" target="_blank">GitHub</a>`
+    infoBlock.appendChild(h1)
+    h1=document.createElement("h1")
+    h1.innerHTML=`<a href="https://www.linkedin.com/in/roman-zinkevich-9466a9255/" target="_blank">LinkedIn</a>`
+    infoBlock.appendChild(h1)
+    infoBlock.appendChild(featureinfo)
+    infoBlock.appendChild(title)
 }
 
 const cleanContainer=()=>{
     const content=document.getElementById('content')
-    content.innerHTML='<div id="chart"></div><h1></h1><table><thead><tr id="titles"></tr></thead><tbody id="measurements"></tbody></table>'
+    content.innerHTML='<div id="chart"></div><div id="info"></div><table><thead><tr id="titles"></tr></thead><tbody id="measurements"></tbody></table>'
 }
 
-const chartCreation=(data,label)=>{
+const chartCreation=(data,label,type,chartType)=>{
     const chart=document.getElementById("chart")
     const myChart=document.createElement("canvas")
     chart.appendChild(myChart)
@@ -239,11 +351,11 @@ const chartCreation=(data,label)=>{
     labelsChart=[]
     
     data.forEach(el=>{
-        dataChart.push(el.temperature ? el.temperature : el.wind_speed)
+        dataChart.push(eval(`el.${type}`))
         labelsChart.push(el.date_time.split('T')[0]+"|"+el.date_time.split('T')[1].slice(0,8))
     })
     new Chart(myChart,{
-        type:'bar',
+        type:chartType,
         data:{
             labels:labelsChart,
             datasets:[
@@ -286,7 +398,7 @@ for (let j=0;j<options.length;j++){
         option.addEventListener('click',()=>{
             selected[j].innerText=option.innerText;
             selects[j].classList.remove('select-clicked')
-            carets[j].classList.remove('rotate')
+            carets[j].classList.remove('caret-rotate')
             menus[j].classList.remove('menu-open')
             for (let x=0;x<options[j].length;x++){
                 let optionLocal=options[j][x]
@@ -297,6 +409,10 @@ for (let j=0;j<options.length;j++){
                 let tabName=document.getElementsByClassName('pressedtab')[0].innerText
                 if (tabName=='Temperature') tempMeasurements()
                 else if (tabName=='Wind Speed') windMeasurements()
+                else customMeasurements()
+            }
+            else{
+                customMeasurements()
             }
                 
         })

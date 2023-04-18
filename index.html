@@ -11,15 +11,15 @@
 </head>
 <body>
     <div id="container">
-        <div class="tabs">
+        <nav class="tabs blue">
             <button id="tab1" class="pressedtab">All</button>
             <button id="tab2">Temperature</button>
             <button id="tab3">Wind Speed</button>
             <button id="tab4">Custom</button>
             <button id="tab5">Info</button>
-        </div>
+        </nav>
         <div class="clr"></div>
-        <div class="dropdown hidden">
+        <div class="dropdown hidden blue">
             <div class="select">
                 <span class="selected">Now</span>
                 <div class="caret"></div>
@@ -32,8 +32,8 @@
                 <li>1W</li>
             </ul>
         </div>
-        <div class="dropdown hidden">
-            <div class="select">
+        <div class="dropdown hidden blue">
+            <div class="select select2">
                 <span class="selected">Rain</span>
                 <div class="caret"></div>
             </div>
@@ -45,9 +45,9 @@
                 <li>Temperature</li>
             </ul>
         </div>
+        <button class="theme"></button>
         <div id="content">
             <div id="chart"></div>
-            <h1></h1>
             <table>
                 <thead>
                     <tr id="titles">
