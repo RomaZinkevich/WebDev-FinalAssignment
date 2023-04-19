@@ -233,7 +233,7 @@ const customMeasurements=()=>{
     const selectedType=document.getElementsByClassName('selected')[1]
     let typeOrigin=selectedType.textContent
     type=typeOrigin.split(' ').join('_').toLowerCase()
-    let link=`http://webapi19sa-1.course.tamk.cloud/v1/weather`
+    let link=`http://webapi19sa-1.course.tamk.cloud/v1/weather/${type}/167`
     nowFlag=true
     cleanContainer()
     document.getElementsByClassName('dropdown')[0].classList.remove('hidden')
