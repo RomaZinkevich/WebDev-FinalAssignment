@@ -261,45 +261,35 @@ const customMeasurements=()=>{
     .then(data=>{
         let htmltext=''
         let i=0
-        let iMax=parseInt(nowFlag?25:1000);
-        let typeOfData=null
         const titles=document.getElementById('titles')
         const tbody=document.getElementById('measurements')
         titles.innerHTML=`<th>Row number</th><th>Date</th><th>Time</th><th>${typeOrigin}</th>`
-        dataNew=[]
-        data.forEach(element=>{
-            for (el in element.data){
-                value=element.data[el]
-                typeOfData=el
-            }
-            if (i<iMax&&((typeOfData==type)||(typeOfData==null))){
-                if (typeOfData==type)
-                dataNew.push({"date_time":element.date_time,
-                [typeOfData]:value})
-                else value=eval(`element.${type}`)
-                i++
-                htmltext+='<tr>'
-                htmltext+='<th id="nums">'
-                htmltext+=i
-                htmltext+='</th>'
-    
-                htmltext+=' <th>'
-                htmltext+=element.date_time.split('T')[0]
-                htmltext+='</th>'
-    
-                htmltext+=' <th>'
-                htmltext+=element.date_time.split('T')[1].slice(0,8)
-                htmltext+='</th>'
-    
-                htmltext+=' <th>'
-                htmltext+=value
-                htmltext+='</th>'
-    
-                htmltext+='</tr>'
-            }
+        if (nowFlag)
+            data=data.slice(0,25)
+        data.forEach(element=>{ 
+            i++
+            htmltext+='<tr>'
+            htmltext+='<th id="nums">'
+            htmltext+=i
+            htmltext+='</th>'
+
+            htmltext+=' <th>'
+            htmltext+=element.date_time.split('T')[0]
+            htmltext+='</th>'
+
+            htmltext+=' <th>'
+            htmltext+=element.date_time.split('T')[1].slice(0,8)
+            htmltext+='</th>'
+
+            htmltext+=' <th>'
+            htmltext+=eval(`element.${type}`)
+            htmltext+='</th>'
+
+            htmltext+='</tr>'
+
             
         })
-        chartCreation(dataNew.length!=0?dataNew:data,typeOrigin,type,'line')
+        chartCreation(data,typeOrigin,type,'line')
         tbody.innerHTML=htmltext
     })
     .catch(error=>{
